@@ -95,7 +95,7 @@ jobs:
 
     - name: Set Variables
       run: |
-        echo "::set-output name=date::$(TZ=Australia/Sydney date +"%Y%m%d"-%H%M)
+        echo "::set-output name=date::$(TZ=Australia/Sydney date +"%Y%m%d-%H%M")
       id: var
 
     - name: Prepare Environment
