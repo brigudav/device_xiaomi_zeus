@@ -124,3 +124,6 @@ TARGET_USES_LOGD := true
 
 BUILD_BROKEN_DUP_SYSPROP := true
 BOARD_HAS_NO_SELECT_BUTTON := true
+
+# USB Mounting
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.usb0/lun.%d/file
