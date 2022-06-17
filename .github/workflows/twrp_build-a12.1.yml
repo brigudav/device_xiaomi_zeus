@@ -158,13 +158,13 @@ jobs:
       run: |
         ZIP=${GITHUB_WORKSPACE}/workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ steps.zipname.outputs.name }}
         curl \
-        -F chat_id=${{ secrets.CHAT_ID }} \
+        -F chat_id=$CHAT_ID \
         -F disable_notification=true \
         -F parse_mode=HTML \
         -F caption=\
         " <b>TWRP for <i>${{ github.event.inputs.DEVICE_NAME }}</i> done." \
         -F document=@$ZIP \
-        https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendDocument
+        https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 
     - name: Publish to GitHub
       if: github.event.inputs.PUBLISH == 'true'
