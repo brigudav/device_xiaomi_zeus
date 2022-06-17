@@ -162,7 +162,7 @@ jobs:
         -F disable_notification=true \
         -F parse_mode=HTML \
         -F caption=\
-        " <b>TWRP for <i>${{ github.event.inputs.DEVICE_NAME }}</i> done." \
+        " <b>TWRP for <i>${{ github.event.inputs.DEVICE_NAME }}</i> done.</b> " \
         -F document=@$ZIP \
         https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 
