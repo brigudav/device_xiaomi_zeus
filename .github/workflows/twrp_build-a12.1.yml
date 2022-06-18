@@ -93,17 +93,12 @@ jobs:
     - name: Check Out Repository
       uses: actions/checkout@v3
 
-    - name: Set Variables
-      run: |
-        echo "::set-output name=date::$(TZ=Australia/Sydney date +%Y%m%d-%H%M)"
-      id: var
-
     - name: Prepare Environment
       run: |
         export HOME=${GITHUB_WORKSPACE}
         cd ${GITHUB_WORKSPACE}
         sudo apt -y install git aria2 
-        git clone https://gitlab.com/OrangeFox/misc/scripts
+        git clone https://github.com/brigudav/scripts
         cd scripts
         sudo bash setup/android_build_env.sh
         sudo bash setup/install_android_sdk.sh || true
@@ -142,6 +137,11 @@ jobs:
         lunch ${{ github.event.inputs.MANIFEST_TYPE }}_${{ github.event.inputs.DEVICE_NAME }}-eng
         make clean
         make ${{ github.event.inputs.DEVICE_TYPE }}image -j$(nproc --all)
+
+    - name: Set Variables
+      run: |
+        echo "::set-output name=date::$(TZ=Australia/Sydney date +%Y%m%d-%H%M)"
+      id: var
 
     - name: Add Img to Zip
       run: |
