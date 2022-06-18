@@ -161,7 +161,7 @@ jobs:
         curl \
         -F chat_id=$CHAT_ID \
         -F disable_notification=true \
-        -F parse_mode=HTML \
+        -F parse_mode=markdown \
         -F caption=\
         " <b>- Build for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i> <b>completed%0A- Upload Time: </b><i>$(TZ=Australia/Sydney date +"%Y-%m-%d %H:%M:%S")</i> " \
         -F document=@$ZIP \
