@@ -141,11 +141,12 @@ jobs:
     - name: Set Variables
       run: |
         echo "::set-output name=date::$(TZ=Australia/Sydney date +%Y%m%d-%H%M)"
+        echo "::set-output name=Outdir::${GITHUB_WORKSPACE}/workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}"
       id: var
 
     - name: Add Img to Zip
       run: |
-        cd ${GITHUB_WORKSPACE}/workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}
+        cd ${{ steps.var.outputs.Outdir }}
         zip -9 twrp-${{ github.event.inputs.DEVICE_NAME }}-${{ steps.var.outputs.date }}.zip ${{ github.event.inputs.DEVICE_TYPE }}.img
         echo "::set-output name=name::$(find * -name *.zip -type f)"
       id: zipname
@@ -156,13 +157,13 @@ jobs:
         CHAT_ID: ${{ secrets.TELEGRAM_TO }}
         BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }} 
       run: |
-        ZIP=${GITHUB_WORKSPACE}/workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ steps.zipname.outputs.name }}
+        ZIP=${{ steps.var.outputs.Outdir }}/${{ steps.zipname.outputs.name }}
         curl \
         -F chat_id=$CHAT_ID \
         -F disable_notification=true \
         -F parse_mode=HTML \
         -F caption=\
-        " <b>TWRP for <i>${{ github.event.inputs.DEVICE_NAME }}</i> done.</b> " \
+        " <b>- Build for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i> <b>completed%0A- Upload Time: </b><i>$(TZ=Australia/Sydney date +"%Y-%m-%d %H:%M:%S")</i> " \
         -F document=@$ZIP \
         https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 
@@ -170,7 +171,7 @@ jobs:
       if: github.event.inputs.PUBLISH == 'true'
       uses: softprops/action-gh-release@v1
       with:
-        files: workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ steps.zipname.outputs.name }}
+        files: ${{ steps.var.outputs.Outdir }}/${{ steps.zipname.outputs.name }}
         name: ${{ steps.zipname.outputs.name }}-${{ github.run_id }}
         tag_name: ${{ github.run_id }}
         body: Recovery for ${{ github.event.inputs.DEVICE_NAME }}
