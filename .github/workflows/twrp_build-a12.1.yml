@@ -161,9 +161,9 @@ jobs:
         curl \
         -F chat_id=$CHAT_ID \
         -F disable_notification=true \
-        -F parse_mode=markdown \
+        -F parse_mode=HTML \
         -F caption=\
-        " <b>- Build for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i> <b>completed%0A- Upload Time: </b><i>$(TZ=Australia/Sydney date +"%Y-%m-%d %H:%M:%S")</i> " \
+        " <b>- Build for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i> <b>completed'\n'- Upload Time: </b><i>$(TZ=Australia/Sydney date +"%Y-%m-%d %H:%M:%S")</i> " \
         -F document=@$ZIP \
         https://api.telegram.org/bot$BOT_TOKEN/sendDocument
 
