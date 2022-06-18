@@ -71,18 +71,6 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - name: Send notification to Telegram
-      if: github.event.inputs.UPLOAD == 'true'
-      env:
-        CHAT_ID: ${{ secrets.TELEGRAM_TO }}
-        BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }} 
-      run: |
-        curl -s \
-          -X POST https://api.telegram.org/bot$BOT_TOKEN/sendMessage \
-          -d caption="<b>- Run build recovery for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i>%0A<b>- Start Time: </b><i>$(TZ=Australia/Sydney date +"%Y-%m-%d"-%H:%M:%S)</i>" \
-          -d chat_id=$CHAT_ID \
-          -d parse_mode=HTML
-
     - name: Remove Useless Package
       run: |
         docker rmi `docker images -q`
@@ -170,14 +158,12 @@ jobs:
         BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
       run: |
         ZIP=${{ steps.var.outputs.Outdir }}/${{ steps.zipname.outputs.name }}
-        curl \
+        curl https://api.telegram.org/bot$BOT_TOKEN/sendDocument
         -F chat_id=$CHAT_ID \
         -F disable_notification=true \
         -F parse_mode=HTML \
-        -F caption=\
-        "<b>- Build for </b><i>${{ github.event.inputs.DEVICE_NAME }}</i><b>done.</b>" \
-        -F document=@$ZIP \
-        https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+        -F caption="<b>- Build for <i>${{ github.event.inputs.DEVICE_NAME }}</i> completed.</b>" \
+        -F document=@$ZIP
 
     - name: Publish to GitHub
       if: github.event.inputs.PUBLISH == 'true'
